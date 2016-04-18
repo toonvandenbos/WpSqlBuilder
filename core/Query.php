@@ -175,6 +175,27 @@ class Query
 
 
       /**
+       * Adds the necessary joints and selects in order to fetch a post's given ACF fields
+       * @param  array $fields
+       * @return object $this
+       */
+
+      public function withAcf( array $fields )
+      {
+            if(($table_p = $this->getTable('posts')) && count($fields)){
+                  foreach ($fields as $field => $alias) {
+                        if(is_numeric($field)) $field = $alias;
+                        $table_pm = $this->addTable('postmeta', false);
+                        $this->addJoint($table_pm, new Column('ID', false, $table_p), new Column('post_id', false, $table_pm));
+                        $this->addColumn($table_pm, 'meta_value', $field != $alias ? $alias : null);
+                        $this->where($table_pm->alias . '.meta_key', $field);
+                  }
+            }
+            return $this;
+      }
+
+
+      /**
        * Executes the query
        * @return mixed $results
        */
