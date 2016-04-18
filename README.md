@@ -2,9 +2,9 @@
 
 *Version 0.0.1*
 
-This simple PHP library is meant to let you develop Wordpress stuff in an easier way.
+This simple PHP library allows you to develop more efficiently and more easily with WordPress.
 
-The main reason I created this library was because we had serious server-side performance issues on a Wordpress project, back at [WhiteCube](http://www.whitecube.be/), the digital agency where I work. We were building an archive template, with some extra fields on each post, using ACF. Well, it turned out the page had to make over **300 SQL requests** in order to render the posts list completly. Using this library, we were able to reduce the amount of requests to **one single request**.
+I created this library because we had serious server-side performance issues on a WordPress project, back at [WhiteCube](http://www.whitecube.be/), the digital agency where I work. We were building an archive template, with some extra fields on each post, using ACF. It turned out the page had to make over **300 SQL requests** in order to render the posts list completely. Using this library, we were able to reduce the amount of requests to **one single request**.
 
 ## Install
 
@@ -24,7 +24,7 @@ use WpSqlBuilder\Builder as WpSqlBuilder;
 
 There are several ways you can perform a `SELECT` query, depending on the flexibility you want to have.
 
-In most cases, you'll simply want to get somes posts from the database:
+In most cases, you'll simply want to get some posts from the database:
 
 ```php
 use WpSqlBuilder\Builder as WpSqlBuilder;
@@ -32,7 +32,7 @@ use WpSqlBuilder\Builder as WpSqlBuilder;
 $posts = WpSqlBuilder::posts()->get();
 ```
 
-You also could specify a **custom post-type**:
+You could also specify a **custom post-type**:
 
 ```php
 use WpSqlBuilder\Builder as WpSqlBuilder;
@@ -52,7 +52,7 @@ $fruits = WpSqlBuilder::fruit(['ID', 'post_title' => 'name', 'post_name' => 'slu
 $projects = WpSqlBuilder::project(['post_title' => 'title'], true)->get();
 ```
 
-It is possible to select from some other wordpress tables directly with these functions:
+It is possible to select from other WordPress tables directly with these functions:
 
 ```php
 use WpSqlBuilder\Builder as WpSqlBuilder;
@@ -64,7 +64,7 @@ $terms = WpSqlBuilder::terms()->get();
 $users = WpSqlBuilder::users()->get();
 ```
 
-Or from every table you want with:
+Or from any table you want with:
 
 ```php
 use WpSqlBuilder\Builder as WpSqlBuilder;
@@ -76,7 +76,7 @@ $customDistinctNames = WpSqlBuilder::select('my_custom_table', ['last_name' => '
 
 ## Chaining
 
-The SQL query is builded once you call `get()`. Before, you can chain all of the following functions, without any specific order. This means you can build very complex queries, using all the flexibility you need.
+The SQL query is built once you call `get()`. Before that, you can chain all of the following functions, without any specific order. This means you can build very complex queries in a very flexible way.
 
 ```php
 use WpSqlBuilder\Builder as WpSqlBuilder;
@@ -95,4 +95,4 @@ if( isset($_POST['add_term']) ){
 $posts = $query->get();
 ```
 
-**Soon: description of all available methods.** Or, you could take a look at the source if you want to know them now.
+**Coming soon: description of all available methods.** Or, you could take a look at the source code if you want to know them now.
