@@ -1,6 +1,6 @@
 <?php
 
-namespace WpSqlBuilder\Composants\Conditions;
+namespace WpSqlBuilder\Components\Conditions;
 
 class Simple
 {

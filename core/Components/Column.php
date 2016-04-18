@@ -1,6 +1,6 @@
 <?php
 
-namespace WpSqlBuilder\Composants;
+namespace WpSqlBuilder\Components;
 
 class Column
 {

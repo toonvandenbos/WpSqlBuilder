@@ -1,8 +1,8 @@
 <?php
 
-namespace WpSqlBuilder\Composants\Operations;
+namespace WpSqlBuilder\Components\Operations;
 
-use WpSqlBuilder\Composants\Operation;
+use WpSqlBuilder\Components\Operation;
 
 class Select extends Operation
 {

@@ -44,7 +44,7 @@ class Grammar
       public static function getCondition($condition, $isFirst)
       {
             $s = $isFirst ? '' : ' ' . $condition->chain . ' ';
-            if(get_class($condition) == 'WpSqlBuilder\Composants\Conditions\Complex'){
+            if(get_class($condition) == 'WpSqlBuilder\Components\Conditions\Complex'){
                   $s .= '(';
                   foreach ($condition->conditions as $i => $sub) {
                         $s .= self::getCondition($sub, $i ? false : true);

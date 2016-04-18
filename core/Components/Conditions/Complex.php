@@ -1,6 +1,6 @@
 <?php
 
-namespace WpSqlBuilder\Composants\Conditions;
+namespace WpSqlBuilder\Components\Conditions;
 
 class Complex
 {
@@ -60,7 +60,7 @@ class Complex
 
       /**
        * Adds a complex where condition to the query.
-       * @return WpSqlBuilder\Composants\Conditions\Complex
+       * @return WpSqlBuilder\Components\Conditions\Complex
        */
 
       public function whereComplex()
@@ -71,7 +71,7 @@ class Complex
 
       /**
        * Alias of "whereComplex".
-       * @return WpSqlBuilder\Composants\Conditions\Complex
+       * @return WpSqlBuilder\Components\Conditions\Complex
        */
 
       public function andWhereComplex()
@@ -82,7 +82,7 @@ class Complex
 
       /**
        * chains an "OR WHERE (...)" condition to the query. Should not be called as first condition.
-       * @return WpSqlBuilder\Composants\Conditions\Complex
+       * @return WpSqlBuilder\Components\Conditions\Complex
        */
 
       public function orWhereComplex()

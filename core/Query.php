@@ -2,12 +2,12 @@
 
 namespace WpSqlBuilder;
 
-use WpSqlBuilder\Composants\Table;
-use WpSqlBuilder\Composants\Column;
-use WpSqlBuilder\Composants\Joint;
-use WpSqlBuilder\Composants\Conditions\Simple as Condition;
-use WpSqlBuilder\Composants\Conditions\Complex as ComplexCondition;
-use WpSqlBuilder\Composants\Operations\Select;
+use WpSqlBuilder\Components\Table;
+use WpSqlBuilder\Components\Column;
+use WpSqlBuilder\Components\Joint;
+use WpSqlBuilder\Components\Conditions\Simple as Condition;
+use WpSqlBuilder\Components\Conditions\Complex as ComplexCondition;
+use WpSqlBuilder\Components\Operations\Select;
 
 /**
 * Dynamic query container
@@ -90,7 +90,7 @@ class Query
 
       /**
        * Adds a complex where condition to the query.
-       * @return WpSqlBuilder\Composants\Conditions\Complex
+       * @return WpSqlBuilder\Components\Conditions\Complex
        */
 
       public function whereComplex()
@@ -101,7 +101,7 @@ class Query
 
       /**
        * Alias of "whereComplex".
-       * @return WpSqlBuilder\Composants\Conditions\Complex
+       * @return WpSqlBuilder\Components\Conditions\Complex
        */
 
       public function andWhereComplex()
@@ -112,7 +112,7 @@ class Query
 
       /**
        * chains an "OR WHERE (...)" condition to the query. Should not be called as first condition.
-       * @return WpSqlBuilder\Composants\Conditions\Complex
+       * @return WpSqlBuilder\Components\Conditions\Complex
        */
 
       public function orWhereComplex()
