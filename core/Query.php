@@ -152,6 +152,29 @@ class Query
 
 
       /**
+       * Adds the necessary joints and selects in order to fetch a post's thumbnail
+       * @param  string $name
+       * @return object $this
+       */
+
+      public function withThumb( $name = 'thumbnail' )
+      {
+            if($table_p = $this->getTable('posts')){
+                  $table_pm = $this->addTable('postmeta', false);
+                  $table_post = $this->addTable('posts', false);
+                  $table_ppm = $this->addTable('postmeta', false);
+                  $this->addJoint($table_pm, new Column('ID', false, $table_p), new Column('post_id', false, $table_pm));
+                  $this->addJoint($table_post, new Column('meta_value', false, $table_pm), new Column('ID', false, $table_post));
+                  $this->addJoint($table_ppm, new Column('ID', false, $table_post), new Column('post_id', false, $table_ppm));
+                  $this->addColumns( $table_post, [ 'ID' => $name . '_id', 'guid' => $name . '_src' ] );
+                  $this->addColumn( $table_ppm, 'meta_value', $name . '_data' );
+                  $this->whereComplex()->where($table_pm->alias . '.meta_key', '_thumbnail_id')->where($table_ppm->alias . '.meta_key', '_wp_attachment_metadata');
+            }
+            return $this;
+      }
+
+
+      /**
        * Executes the query
        * @return mixed $results
        */
@@ -177,6 +200,7 @@ class Query
       /**
        * Adds a table to the tables array if it could not find an existing reference
        * @param  string $table
+       * @param  boolean $isRoot
        * @return int $table
        */
 
@@ -191,6 +215,21 @@ class Query
             }
             array_push($this->tables, $table);
             return $table;
+      }
+
+
+      /**
+       * finds a table based on the basename in the tables list
+       * @param  string $table
+       * @return object $table
+       */
+
+      protected function getTable($table)
+      {
+            foreach ($this->tables as $t) {
+                  if($t->basename == $table) return $t;
+            }
+            return false;
       }
 
 
