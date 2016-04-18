@@ -122,6 +122,27 @@ class Query
 
 
       /**
+       * Adds a where condition to the query based on an ACF field's value
+       * @param  string $field
+       * @param  (optional) string $condition
+       * @param  mixed $value
+       * @return object $this
+       */
+
+      public function whereAcf(...$args)
+      {
+            if($table_p = $this->getTable('posts')){
+                  $table_pm = $this->addTable('postmeta', false);
+                  $this->addJoint($table_pm, new Column('ID', false, $table_p), new Column('post_id', false, $table_pm));
+                  $where = $this->whereComplex()->where($table_pm->alias . '.meta_key', $args[0]);
+                  $args[0] = $table_pm->alias . '.meta_value';
+                  call_user_func_array([$where, 'where'], $args);
+            }
+            return $this;
+      }
+
+
+      /**
        * Adds a joint to the query
        * @param  string $table
        * @param  string $leftColumn
