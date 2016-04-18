@@ -65,7 +65,7 @@ class Builder
       protected static function checkDbConnector()
       {
             global $wpdb;
-            if(!is_object($wpdb)) throw new Exception("WpSqlBuilder - No Wordpress database object was found.", 1);
+            if(!is_object($wpdb)) throw new \Exception("WpSqlBuilder - No Wordpress database object was found.", 1);
             return true;
       }
 

@@ -33,7 +33,7 @@ class Query
 
       public function select( $table, $columns = ['*'], $distinct = false )
       {
-            if($this->operation && $this->operation->type !== 'select') throw new Exception('WpSqlBuilder - Cannot perform select on "'.$this->operation->type.'" operation.', 1);
+            if($this->operation && $this->operation->type !== 'select') throw new \Exception('WpSqlBuilder - Cannot perform select on "'.$this->operation->type.'" operation.', 1);
             $table = $this->addTable($table);
             if(!$this->operation){
                   $this->setOperation('select', $distinct);
@@ -131,13 +131,36 @@ class Query
 
       public function whereAcf(...$args)
       {
-            if($table_p = $this->getTable('posts')){
-                  $table_pm = $this->addTable('postmeta', false);
-                  $this->addJoint($table_pm, new Column('ID', false, $table_p), new Column('post_id', false, $table_pm));
-                  $where = $this->whereComplex()->where($table_pm->alias . '.meta_key', $args[0]);
-                  $args[0] = $table_pm->alias . '.meta_value';
-                  call_user_func_array([$where, 'where'], $args);
-            }
+            $this->addAcfCondition('and', $args, $this->conditions);
+            return $this;
+      }
+
+
+      /**
+       * Alias of "whereAcf"
+       * @param  string $field
+       * @param  (optional) string $condition
+       * @param  mixed $value
+       * @return object $this
+       */
+
+      public function andWhereAcf(...$args)
+      {
+            return call_user_func_array([$this, 'whereAcf'], $args);
+      }
+
+
+      /**
+       * chains an "OR WHERE (...)" condition to the query base on an ACF field's value. Should not be called as first condition.
+       * @param  string $field
+       * @param  (optional) string $condition
+       * @param  mixed $value
+       * @return object $this
+       */
+
+      public function orWhereAcf(...$args)
+      {
+            $this->addAcfCondition('or', $args, $this->conditions);
             return $this;
       }
 
@@ -206,8 +229,7 @@ class Query
             if(($table_p = $this->getTable('posts')) && count($fields)){
                   foreach ($fields as $field => $alias) {
                         if(is_numeric($field)) $field = $alias;
-                        $table_pm = $this->addTable('postmeta', false);
-                        $this->addJoint($table_pm, new Column('ID', false, $table_p), new Column('post_id', false, $table_pm));
+                        $table_pm = $this->addAcfJoint();
                         $this->addColumn($table_pm, 'meta_value', $field != $alias ? $alias : null);
                         $this->where($table_pm->alias . '.meta_key', $field);
                   }
@@ -235,7 +257,7 @@ class Query
       public function generate()
       {
             if($this->operation) return $this->buildGrammar();
-            else throw new Exception("WpSqlBuilder - Could not build sql string without valid operation.", 1);
+            else throw new \Exception("WpSqlBuilder - Could not build sql string without valid operation.", 1);
       }
 
 
@@ -298,6 +320,25 @@ class Query
 
 
       /**
+       * Adds a table and joint for a new ACF connexion
+       * @param  string $table
+       * @param  boolean $isRoot
+       * @return int $table
+       */
+
+      protected function addAcfJoint()
+      {
+            if($p = $this->getTable('posts')) {
+                  $pm = $this->addTable('postmeta', false);
+                  $this->addJoint($pm, new Column('ID', false, $p), new Column('post_id', false, $pm));
+                  return $pm;
+            }
+            throw new \Exception('WpSqlBuilder - Trying to join ACF fields to query without "posts" table.', 1);
+            
+      }
+
+
+      /**
        * Adds a columns to columns array
        * @param  object $table
        * @param  array $cols
@@ -340,7 +381,7 @@ class Query
       {
             foreach ($this->columns as $col) {
                   if($col->table->alias == $table->alias && $col->name == $column) return true;
-                  if($col->alias == $alias) throw new Exception('WpSqlBuilder - Trying to add two different columns with same alias "'.$alias.'".', 1);
+                  if($col->alias == $alias) throw new \Exception('WpSqlBuilder - Trying to add two different columns with same alias "'.$alias.'".', 1);
             }
             return false;
       }
@@ -374,6 +415,22 @@ class Query
 
 
       /**
+       * Adds a simple ACF Condition
+       * @param  string $chain
+       * @param  array $arguments
+       * @return void
+       */
+
+      public function addAcfCondition($chain, $arguments, &$array)
+      {
+            $table_pm = $this->addAcfJoint();
+            $condition = $this->addComplexCondition($chain, $array)->where($table_pm->alias . '.meta_key', $arguments[0]);
+            $arguments[0] = $table_pm->alias . '.meta_value';
+            call_user_func_array([$condition, 'where'], $arguments);
+      }
+
+
+      /**
        * Parse and find column/table from condition column
        * @param  string $string
        * @return object $columns
@@ -383,7 +440,7 @@ class Query
       {
             $a = explode('.', $str);
             if (count($a) == 1) {
-                  if(!$this->base) throw new Exception('WpSqlBuilder - Cannot guess table for condition if no base operation has been defined', 1);
+                  if(!$this->base) throw new \Exception('WpSqlBuilder - Cannot guess table for condition if no base operation has been defined', 1);
                   return new Column($str, false, $this->base );
             }
             return new Column($a[1], false, $this->addTable($a[0]) );
@@ -418,7 +475,7 @@ class Query
                               break;
                   }
             }
-            else throw new Exception("WpSqlBuilder - Trying to add new operation to existing query.", 1);
+            else throw new \Exception("WpSqlBuilder - Trying to add new operation to existing query.", 1);
       }
 
 
