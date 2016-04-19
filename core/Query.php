@@ -230,7 +230,7 @@ class Query
                   foreach ($fields as $field => $alias) {
                         if(is_numeric($field)) $field = $alias;
                         $table_pm = $this->addAcfJoint();
-                        $this->addColumn($table_pm, 'meta_value', $field != $alias ? $alias : null);
+                        $this->addColumn($table_pm, 'meta_value', $field != $alias ? $alias : $field);
                         $this->where($table_pm->alias . '.meta_key', $field);
                   }
             }
