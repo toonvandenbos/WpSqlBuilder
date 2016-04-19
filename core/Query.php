@@ -5,6 +5,7 @@ namespace WpSqlBuilder;
 use WpSqlBuilder\Components\Table;
 use WpSqlBuilder\Components\Column;
 use WpSqlBuilder\Components\Joint;
+use WpSqlBuilder\Components\Limit;
 use WpSqlBuilder\Components\Conditions\Simple as Condition;
 use WpSqlBuilder\Components\Conditions\Complex as ComplexCondition;
 use WpSqlBuilder\Components\Operations\Select;
@@ -21,6 +22,7 @@ class Query
       protected $conditions = [];
       protected $groupBy;
       protected $tables = [];
+      protected $limit;
 
 
       /**
@@ -191,6 +193,20 @@ class Query
       public function groupBy( $table, $column )
       {
             $this->groupBy = new Column($column, false, $this->addTable($table) );
+            return $this;
+      }
+
+
+      /**
+       * Adds a limit statement to the query
+       * @param  int $count
+       * @param  int $offset
+       * @return object $this
+       */
+
+      public function limit( $count, $offset = 0 )
+      {
+            $this->limit = new Limit($offset, $count);
             return $this;
       }
 

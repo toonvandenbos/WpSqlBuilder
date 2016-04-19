@@ -12,7 +12,8 @@ class Select extends Operation
                   'getFrom' => ['base'],
                   'getJoints' => ['joints'],
                   'getWhere' => ['conditions'],
-                  'getGroupBy' => ['groupBy']
+                  'getGroupBy' => ['groupBy'],
+                  'getLimit' => ['limit']
             ];
 
       public function getBase()

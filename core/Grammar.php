@@ -64,4 +64,11 @@ class Grammar
             return $s;
       }
 
+      public static function getLimit($limit)
+      {
+            $s = '';
+            if($limit) $s .= ' LIMIT ' . $limit;
+            return $s;
+      }
+
 }
