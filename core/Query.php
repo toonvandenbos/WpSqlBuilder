@@ -381,7 +381,7 @@ class Query
       {
             foreach ($this->columns as $col) {
                   if($col->table->alias == $table->alias && $col->name == $column) return true;
-                  if($col->alias == $alias) throw new \Exception('WpSqlBuilder - Trying to add two different columns with same alias "'.$alias.'".', 1);
+                  if(strlen($alias) && $col->alias == $alias) throw new \Exception('WpSqlBuilder - Trying to add two different columns with same alias "'.$alias.'".', 1);
             }
             return false;
       }
