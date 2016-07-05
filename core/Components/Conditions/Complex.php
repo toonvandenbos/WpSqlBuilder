@@ -14,6 +14,17 @@ class Complex
             $this->query = $query;
       }
 
+      public function __toString()
+      {
+            $s = '(';
+            foreach ($this->conditions as $i => $condition) {
+                  if($i) $s .= ' ' . $condition->chain . ' ';
+                  $s .= $condition;
+            }
+            $s .= ')';
+            return $s;
+      }
+
       /**
        * Adds a where condition to the query. Can be called multiple times
        * @param  string $column

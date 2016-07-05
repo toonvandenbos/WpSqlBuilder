@@ -35,24 +35,9 @@ class Grammar
             if(count($where)){
                   $s .= ' WHERE ';
                   foreach ($where as $i => $condition) {
-                        $s .= self::getCondition($condition, $i ? false : true);
+                        if($i) $s .= ' ' . $condition->chain . ' ';
+                        $s .= $condition;
                   }
-            }
-            return $s;
-      }
-
-      public static function getCondition($condition, $isFirst)
-      {
-            $s = $isFirst ? '' : ' ' . $condition->chain . ' ';
-            if(get_class($condition) == 'WpSqlBuilder\Components\Conditions\Complex'){
-                  $s .= '(';
-                  foreach ($condition->conditions as $i => $sub) {
-                        $s .= self::getCondition($sub, $i ? false : true);
-                  }
-                  $s .= ')';
-            }
-            else{
-                  $s .= $condition;
             }
             return $s;
       }
