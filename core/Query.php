@@ -168,7 +168,7 @@ class Query
 
 
       /**
-       * Adds a joint to the query
+       * performs a joint to the query
        * @param  string $table
        * @param  string $leftColumn
        * @param  string $rightColumn
@@ -179,6 +179,21 @@ class Query
       {
             $table = $this->addTable($table);
             $this->addSimpleJoint($table, $this->getConditionColumn($leftColumn), $this->getConditionColumn($rightColumn));
+            return $this;
+      }
+
+
+      /**
+       * performs a joint to the query with a custom ON clause
+       * @param  string $table
+       * @param  object $condition
+       * @return object $this
+       */
+
+      public function joinComplex( $table, $condition )
+      {
+            $table = $this->addTable($table);
+            $this->addJoint($table, $condition);
             return $this;
       }
 
@@ -473,7 +488,20 @@ class Query
 
       protected function addSimpleJoint($table, $leftCol, $rightCol)
       {
-            array_push($this->joints, new Joint($table, new Condition('AND', [$leftCol, $rightCol], $this)));
+            $this->addJoint($table, new Condition('AND', [$leftCol, $rightCol], $this));
+      }
+
+
+      /**
+       * Adds a joint to the query with custom ON clause
+       * @param  object $table
+       * @param  object $condition
+       * @return void
+       */
+
+      protected function addJoint($table, $condition)
+      {
+            array_push($this->joints, new Joint($table, $condition));
       }
 
 
