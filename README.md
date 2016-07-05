@@ -1,6 +1,6 @@
 # Wordpress SQL Builder
 
-*Version 0.0.1*
+*Version 0.0.2*
 
 This simple PHP library allows you to develop more efficiently and more easily with WordPress.
 
