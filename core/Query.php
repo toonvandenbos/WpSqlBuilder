@@ -178,7 +178,7 @@ class Query
       public function join( $table, $leftColumn, $rightColumn )
       {
             $table = $this->addTable($table);
-            $this->addJoint($table, $this->getConditionColumn($leftColumn), $this->getConditionColumn($rightColumn));
+            $this->addSimpleJoint($table, $this->getConditionColumn($leftColumn), $this->getConditionColumn($rightColumn));
             return $this;
       }
 
@@ -223,9 +223,9 @@ class Query
                   $table_pm = $this->addTable('postmeta', false);
                   $table_post = $this->addTable('posts', false);
                   $table_ppm = $this->addTable('postmeta', false);
-                  $this->addJoint($table_pm, new Column('ID', false, $table_p), new Column('post_id', false, $table_pm));
-                  $this->addJoint($table_post, new Column('meta_value', false, $table_pm), new Column('ID', false, $table_post));
-                  $this->addJoint($table_ppm, new Column('ID', false, $table_post), new Column('post_id', false, $table_ppm));
+                  $this->addSimpleJoint($table_pm, new Column('ID', false, $table_p), new Column('post_id', false, $table_pm));
+                  $this->addSimpleJoint($table_post, new Column('meta_value', false, $table_pm), new Column('ID', false, $table_post));
+                  $this->addSimpleJoint($table_ppm, new Column('ID', false, $table_post), new Column('post_id', false, $table_ppm));
                   $this->addColumns( $table_post, [ 'ID' => $name . '_id', 'guid' => $name . '_src' ] );
                   $this->addColumn( $table_ppm, 'meta_value', $name . '_data' );
                   $this->whereComplex()->where($table_pm->alias . '.meta_key', '_thumbnail_id')->where($table_ppm->alias . '.meta_key', '_wp_attachment_metadata');
@@ -346,7 +346,7 @@ class Query
       {
             if($p = $this->getTable('posts')) {
                   $pm = $this->addTable('postmeta', false);
-                  $this->addJoint($pm, new Column('ID', false, $p), new Column('post_id', false, $pm));
+                  $this->addSimpleJoint($pm, new Column('ID', false, $p), new Column('post_id', false, $pm));
                   return $pm;
             }
             throw new \Exception('WpSqlBuilder - Trying to join ACF fields to query without "posts" table.', 1);
@@ -471,9 +471,9 @@ class Query
        * @return void
        */
 
-      protected function addJoint($table, $leftCol, $rightCol)
+      protected function addSimpleJoint($table, $leftCol, $rightCol)
       {
-            array_push($this->joints, new Joint($table, $leftCol, $rightCol));
+            array_push($this->joints, new Joint($table, new Condition('AND', [$leftCol, $rightCol], $this)));
       }
 
 

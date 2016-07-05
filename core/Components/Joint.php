@@ -7,18 +7,16 @@ class Joint
       const SYNTAX = 'JOIN';
 
       public $table;
-      public $left;
-      public $right;
+      public $condition;
 
-      public function __construct($table, $left, $right)
+      public function __construct($table, $condition)
       {
             $this->table = $table;
-            $this->left = $left;
-            $this->right = $right;
+            $this->condition = $condition;
       }
 
       public function __toString()
       {
-            return static::SYNTAX . ' ' . $this->table . ' ON ' . $this->left . '=' . $this->right;
+            return static::SYNTAX . ' ' . $this->table . ' ON ' . $this->condition;
       }
 }

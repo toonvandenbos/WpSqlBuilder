@@ -2,6 +2,8 @@
 
 namespace WpSqlBuilder\Components\Conditions;
 
+use WpSqlBuilder\Components\Column;
+
 class Simple
 {
       public $chain;
@@ -25,13 +27,13 @@ class Simple
       {
             switch (count($a)) {
                   case 2:
-                        $this->column = $query->getConditionColumn($a[0]);
+                        $this->column = $this->getColumn($a[0], $query);
                         $this->condition = '=';
                         $this->original = $a[1];
                         $this->value = $this->getValue('=');
                         break;
                   case 3:
-                        $this->column = $query->getConditionColumn($a[0]);
+                        $this->column = $this->getColumn($a[0], $query);
                         $this->condition = $this->getCondition($a[1]);
                         $this->original = $a[2];
                         $this->value = $this->getValue($a[1]);
@@ -40,6 +42,13 @@ class Simple
                         throw new Exception('WpSqlBuilder - "where", "andWhere", "orWhere" functions only accept 2 or 3 arguments, but ' . count($a) . ' were passed.', 1);
                         break;
             }
+      }
+
+      protected function getColumn($val, $query)
+      {
+            if(is_string($val)) return $query->getConditionColumn($val);
+            elseif(is_object($val) && $val instanceof Column) return $val;
+            else throw new \Exception('WpSqlBuilder - Condition needs first argument to be a valid column (string or class).', 1);
       }
 
       protected function getCondition($condition)
