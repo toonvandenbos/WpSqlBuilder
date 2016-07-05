@@ -71,8 +71,33 @@ class Simple
 
       protected function getDefaultValue()
       {
-            if(is_numeric($this->original)) return $this->original;
+            switch (gettype($this->original)) {
+                  case 'string':
+                        return $this->evalStringValue($this->original);
+                        break;
+                  case 'NULL':
+                        return 'NULL';
+                        break;
+                  case 'boolean':
+                        return $this->evalBoolValue($this->original);
+                        break;
+                  default:
+                        return $this->original;
+                        break;
+            }
+      }
+
+      protected function evalStringValue($s)
+      {
+            $su = strtoupper($s);
+            if($su == 'NOT NULL' || $su == 'NULL') return $su;
             return '\'' . $this->original . '\'';
+      }
+
+      protected function evalBoolValue($b)
+      {
+            if($b) return 'NOT NULL';
+            return 'NULL';
       }
 
       protected function getBetweenValue()
