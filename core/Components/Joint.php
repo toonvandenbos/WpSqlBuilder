@@ -4,7 +4,8 @@ namespace WpSqlBuilder\Components;
 
 class Joint
 {
-      public $type = 'join';
+      const SYNTAX = 'JOIN';
+
       public $table;
       public $left;
       public $right;
@@ -18,11 +19,6 @@ class Joint
 
       public function __toString()
       {
-            return $this->getTypeString() . ' ' . $this->table . ' ON ' . $this->left . '=' . $this->right;
-      }
-
-      protected function getTypeString()
-      {
-            return 'JOIN';
+            return static::SYNTAX . ' ' . $this->table . ' ON ' . $this->left . '=' . $this->right;
       }
 }
