@@ -262,9 +262,8 @@ class Query
             if(($table_p = $this->getTable('posts')) && count($fields)){
                   foreach ($fields as $field => $alias) {
                         if(is_numeric($field)) $field = $alias;
-                        $table_pm = $this->addAcfJoint();
+                        $table_pm = $this->addAcfJoint($field);
                         $this->addColumn($table_pm, 'meta_value', $field != $alias ? $alias : $field);
-                        $this->where($table_pm->alias . '.meta_key', $field);
                   }
             }
             return $this;
@@ -349,25 +348,6 @@ class Query
                   }
             }
             return count($a);
-      }
-
-
-      /**
-       * Adds a table and joint for a new ACF connexion
-       * @param  string $table
-       * @param  boolean $isRoot
-       * @return int $table
-       */
-
-      protected function addAcfJoint()
-      {
-            if($p = $this->getTable('posts')) {
-                  $pm = $this->addTable('postmeta', false);
-                  $this->addSimpleJoint($pm, new Column('ID', false, $p), new Column('post_id', false, $pm));
-                  return $pm;
-            }
-            throw new \Exception('WpSqlBuilder - Trying to join ACF fields to query without "posts" table.', 1);
-            
       }
 
 
@@ -506,6 +486,27 @@ class Query
       protected function addJoint($table, $condition, $joint = Joint::class)
       {
             array_push($this->joints, new $joint($table, $condition));
+      }
+
+
+      /**
+       * Adds a table and joint for a given ACF field
+       * @param  string $key
+       * @return object $table
+       */
+
+      protected function addAcfJoint($key)
+      {
+            if($p = $this->getTable('posts')) {
+                  $pm = $this->addTable('postmeta', false);
+                  $condition = new ComplexCondition(null, $this);
+                  $condition  ->where(new Column('ID', false, $p), new Column('post_id', false, $pm))
+                              ->where(new Column('meta_key', false, $pm), $key);
+                  $this->addJoint($pm, $condition, Components\Joints\Left::class);
+                  return $pm;
+            }
+            throw new \Exception('WpSqlBuilder - Trying to join ACF fields to query without "posts" table.', 1);
+            
       }
 
 
