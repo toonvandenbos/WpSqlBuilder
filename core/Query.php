@@ -172,13 +172,14 @@ class Query
        * @param  string $table
        * @param  string $leftColumn
        * @param  string $rightColumn
+       * @param  class $joint
        * @return object $this
        */
 
-      public function join( $table, $leftColumn, $rightColumn )
+      public function join( $table, $leftColumn, $rightColumn, $joint = null )
       {
             $table = $this->addTable($table);
-            $this->addSimpleJoint($table, $this->getConditionColumn($leftColumn), $this->getConditionColumn($rightColumn));
+            $this->addSimpleJoint($table, $this->getConditionColumn($leftColumn), $this->getConditionColumn($rightColumn), $joint);
             return $this;
       }
 
@@ -187,13 +188,14 @@ class Query
        * performs a joint to the query with a custom ON clause
        * @param  string $table
        * @param  object $condition
+       * @param  class $joint
        * @return object $this
        */
 
-      public function joinComplex( $table, $condition )
+      public function joinComplex( $table, $condition, $joint = null )
       {
             $table = $this->addTable($table);
-            $this->addJoint($table, $condition);
+            $this->addJoint($table, $condition, $joint);
             return $this;
       }
 
@@ -483,12 +485,13 @@ class Query
        * @param  object $table
        * @param  object $leftCol
        * @param  object $rightCol
+       * @param  class $joint
        * @return void
        */
 
-      protected function addSimpleJoint($table, $leftCol, $rightCol)
+      protected function addSimpleJoint($table, $leftCol, $rightCol, $joint = null)
       {
-            $this->addJoint($table, new Condition('AND', [$leftCol, $rightCol], $this));
+            $this->addJoint($table, new Condition('AND', [$leftCol, $rightCol], $this), $joint);
       }
 
 
@@ -496,12 +499,13 @@ class Query
        * Adds a joint to the query with custom ON clause
        * @param  object $table
        * @param  object $condition
+       * @param  class $joint
        * @return void
        */
 
-      protected function addJoint($table, $condition)
+      protected function addJoint($table, $condition, $joint = Joint::class)
       {
-            array_push($this->joints, new Joint($table, $condition));
+            array_push($this->joints, new $joint($table, $condition));
       }
 
 
