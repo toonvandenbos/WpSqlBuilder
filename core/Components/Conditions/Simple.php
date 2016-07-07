@@ -73,34 +73,35 @@ class Simple
                         return $this->getExistsValue();
                         break;
                   default:
-                        return $this->getDefaultValue();
+                        return $this->getParsedValue($this->original);
                         break;
             }
       }
 
-      protected function getDefaultValue()
+      protected function getParsedValue($object)
       {
-            switch (gettype($this->original)) {
+            switch (gettype($object)) {
                   case 'string':
-                        return $this->evalStringValue($this->original);
+                        return $this->evalStringValue($object);
                         break;
                   case 'NULL':
                         return 'NULL';
                         break;
                   case 'boolean':
-                        return $this->evalBoolValue($this->original);
+                        return $this->evalBoolValue($object);
                         break;
                   default:
-                        return $this->original;
+                        return $object;
                         break;
             }
       }
 
       protected function evalStringValue($s)
       {
+            if(is_numeric($s)) return $s;
             $su = strtoupper($s);
             if($su == 'NOT NULL' || $su == 'NULL') return $su;
-            return '\'' . $this->original . '\'';
+            return '\'' . $s . '\'';
       }
 
       protected function evalBoolValue($b)
@@ -118,7 +119,15 @@ class Simple
 
       protected function getInValue()
       {
-            if(is_array($this->original)) return '(' . implode(',', $this->original) . ')';
+            if(is_array($this->original)){
+                  $s = '(';
+                  foreach ($this->original as $i => $object) {
+                        if($i) $s .= ',';
+                        $s .= $this->getParsedValue($object);
+                  }
+                  $s .= ')';
+                  return $s;
+            }
             throw new Exception('WpSqlBuilder - (Not) In condition expects value to be array.', 1);
       }
 
