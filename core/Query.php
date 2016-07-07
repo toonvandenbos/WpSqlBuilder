@@ -483,8 +483,9 @@ class Query
        * @return void
        */
 
-      protected function addJoint($table, $condition, $joint = Joint::class)
+      protected function addJoint($table, $condition, $joint = null)
       {
+            if(!($joint instanceof Joint)) $joint = Joint::class;
             array_push($this->joints, new $joint($table, $condition));
       }
 
