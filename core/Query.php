@@ -485,7 +485,7 @@ class Query
 
       protected function addJoint($table, $condition, $joint = null)
       {
-            if(!($joint instanceof Joint)) $joint = Joint::class;
+            if(!class_exists($joint)) $joint = Joint::class;
             array_push($this->joints, new $joint($table, $condition));
       }
 
