@@ -49,6 +49,13 @@ class Grammar
             return $s;
       }
 
+      public static function getOrderBy($order)
+      {
+            $s = '';
+            if($order) $s .= ' ORDER BY ' . $order;
+            return $s;
+      }
+
       public static function getLimit($limit)
       {
             $s = '';

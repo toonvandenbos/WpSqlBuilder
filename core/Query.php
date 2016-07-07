@@ -6,6 +6,7 @@ use WpSqlBuilder\Components\Table;
 use WpSqlBuilder\Components\Column;
 use WpSqlBuilder\Components\Joint;
 use WpSqlBuilder\Components\Limit;
+use WpSqlBuilder\Components\Order;
 use WpSqlBuilder\Components\Conditions\Simple as Condition;
 use WpSqlBuilder\Components\Conditions\Complex as ComplexCondition;
 use WpSqlBuilder\Components\Operations\Select;
@@ -23,6 +24,7 @@ class Query
       protected $groupBy;
       protected $tables = [];
       protected $limit;
+      protected $order;
 
 
       /**
@@ -224,6 +226,21 @@ class Query
       public function limit( $count, $offset = 0 )
       {
             $this->limit = new Limit($offset, $count);
+            return $this;
+      }
+
+
+      /**
+       * Adds an order by statement to the query
+       * @param  string $object
+       * @param  bool $flag
+       * @return object $this
+       */
+
+      public function orderBy( $object, $flag = null )
+      {
+            $object = strpos($object, '(') !== false ? $object : $this->getConditionColumn($object);
+            $this->order = new Order($object, $flag);
             return $this;
       }
 

@@ -13,6 +13,7 @@ class Select extends Operation
                   'getJoints' => ['joints'],
                   'getWhere' => ['conditions'],
                   'getGroupBy' => ['groupBy'],
+                  'getOrderBy' => ['order'],
                   'getLimit' => ['limit']
             ];
 
