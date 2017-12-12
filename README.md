@@ -95,4 +95,48 @@ if( isset($_POST['add_term']) ){
 $posts = $query->get();
 ```
 
+## Conditions
+
+Conditions are used in `WHERE` AND `JOIN` clauses.
+
+### Simple conditions
+
+It is possible to add simple conditions to the query with a simple `where()` call on the current query. This chainable function has 3 possible ways of working, depending on the number of arguments you'll pass it.
+
+- **1 argument** - plain SQL. The given string will be added as is in the condition.
+- **2 arguments** - equality condition
+    - `$column`: the column concerned by this condition
+    - `$value`: the value that will define the given column's condition
+- **3 arguments** - operator condition
+    - `$column`: the column concerned by this condition
+    - `$operator`: The operator for this condition (possible values are `=`, `<=>`, `<>`, `!=`, `>`, `>=`, `<`, `<=`, `BETWEEN`, `NOT BETWEEN`, `IN`, `NOT IN`, `EXISTS`, `NOT EXISTS`)
+    - `$value`: the value that will define the given column's condition
+
+```
+// WHERE posts.post_author = 57
+WpSqlBuilder::posts()->where('post_author',57)->get();
+// WHERE posts.post_date > '2016-03-16 00:00:00'
+WpSqlBuilder::posts()->where('post_date', '>', '2016-03-16 00:00:00')->get();
+// WHERE posts.post_title = SUBSTR(posts.post_excerpt, 2)
+WpSqlBuilder::posts()->where('posts.post_title = SUBSTR(posts.post_excerpt, 2)')->get();
+```
+
+### Complex conditions
+
+Complex conditions are nothing more than an aggregate of simple conditions.
+
+```
+// WHERE (posts.post_author = 57 AND posts.post_date > '2016-03-16 00:00:00') OR (posts.post_author = 1 AND posts.post_date > '2015-03-16 00:00:00')
+$query = WpSqlBuilder::posts();
+$condition1 = $query->whereComplex()
+    ->where('post_author', 57)
+    ->where('post_date', '>', '2016-03-16 00:00:00');
+$condition2 = $query->whereComplex()
+    ->where('post_author', 1)
+    ->where('post_date', '>', '2015-03-16 00:00:00');
+$query->get();
+```
+
+## Further
+
 **Coming soon: description of all available methods.** Or, you could take a look at the source code if you want to know them now.

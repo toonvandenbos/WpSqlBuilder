@@ -11,6 +11,7 @@ class Simple
       public $condition;
       public $original;
       public $value;
+      public $plain;
 
       public function __construct($chain, $args, &$query)
       {
@@ -20,12 +21,15 @@ class Simple
 
       public function __toString()
       {
+            if($this->plain) return $this->plain;
             return $this->column . $this->condition . $this->value;
       }
 
       protected function setArguments($a, $query)
       {
             switch (count($a)) {
+                  case 1:
+                        $this->plain = trim($a[0]);
                   case 2:
                         $this->column = $this->getColumn($a[0], $query);
                         $this->condition = '=';
